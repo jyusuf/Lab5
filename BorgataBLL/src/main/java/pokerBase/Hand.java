@@ -27,7 +27,7 @@ public class Hand extends HandDomainModel {
 		
 		for (Card c: Cards)
 		{
-			cDM.add(new Card(c.getSuit(), c.getRank(), c.getWild()));
+			cDM.add(new Card(c.getSuit(), c.getRank(), c.getWild(), c.getCardNbr()));
 		}
 		this.setCardsInHand(cDM);
 		
@@ -38,7 +38,7 @@ public class Hand extends HandDomainModel {
 		
 		for (CardDomainModel cDM: this.getCards())
 		{
-			Card c = new Card(cDM.getSuit(), cDM.getRank(), cDM.getWild());
+			Card c = new Card(cDM.getSuit(), cDM.getRank(), cDM.getWild(), cDM.getCardNbr());
 			CardsInHand.add(c);
 		}				
 		return CardsInHand;

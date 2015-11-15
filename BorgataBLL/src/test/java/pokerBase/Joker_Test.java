@@ -93,7 +93,7 @@ public class Joker_Test {
 	public void FourOfAKind2() {
 		Deck d = new Deck();
 		Hand h = new Hand();
-		h.AddCardToHand(new Card(eSuit.HEARTS,eRank.TWO,true));
+		h.AddCardToHand(new Card(eSuit.HEARTS,eRank.TWO,true,0));
 		h.AddCardToHand(new Card(eSuit.HEARTS,eRank.TEN,0));
 		h.AddCardToHand(new Card(eSuit.HEARTS,eRank.FIVE,0));
 		h.AddCardToHand(new Card(eSuit.JOKER,eRank.JOKER,0));

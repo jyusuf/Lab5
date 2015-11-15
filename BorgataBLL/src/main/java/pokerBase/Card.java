@@ -27,8 +27,8 @@ public final class Card extends CardDomainModel {
 		super(suit, rank, CardNbr);		
 	}
 
-	public Card(eSuit suit, eRank rank, boolean Wild) {
-		super(suit, rank, Wild);
+	public Card(eSuit suit, eRank rank, boolean Wild, int CardNbr) {
+		super(suit, rank, Wild, CardNbr);
 	}
 	
 
