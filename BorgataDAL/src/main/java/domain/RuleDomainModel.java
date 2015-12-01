@@ -1,7 +1,6 @@
 package domain;
 
 import java.util.ArrayList;
-
 import enums.eGame;
 import enums.eRank;
 import enums.eSuit;

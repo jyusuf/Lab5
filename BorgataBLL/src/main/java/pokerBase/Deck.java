@@ -3,12 +3,10 @@ package pokerBase;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
 import domain.CardDomainModel;
 import domain.DeckDomainModel;
 import enums.eRank;
@@ -35,7 +33,29 @@ public class Deck extends DeckDomainModel {
 
 	}
 	
+	public Deck(int NbrOfJokers) {
 
+		this();
+
+		for (short i = 1; i <= NbrOfJokers; i++) {
+			cards.add(new Card(eSuit.JOKER, eRank.JOKER, 53));
+		}
+		ShuffleCards();
+	}
+
+	public Deck(int NbrOfJokers, ArrayList<CardDomainModel> WildCards) {
+
+		this(NbrOfJokers);
+
+		for (CardDomainModel deckCard : cards) {
+			for (CardDomainModel WildCard : WildCards) {
+				if ((deckCard.getSuit() == WildCard.getSuit()) && (deckCard.getRank() == WildCard.getRank())) {
+					deckCard.setWild();
+				}
+			}
+		}
+		ShuffleCards();
+	}
 	
 	private void ShuffleCards()
 	{

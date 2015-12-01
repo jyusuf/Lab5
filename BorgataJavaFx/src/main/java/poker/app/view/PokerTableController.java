@@ -1,8 +1,18 @@
 package poker.app.view;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
+import java.util.UUID;
 
+//import org.apache.commons.math3.util.Combinations;
+
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Collections;
+
+import domain.CardDomainModel;
 import enums.eGame;
+import enums.eRank;
+import enums.eSuit;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.RotateTransition;
@@ -37,22 +47,41 @@ import pokerBase.GamePlayPlayerHand;
 import pokerBase.Hand;
 import pokerBase.Player;
 import pokerBase.Rule;
-
+import pokerEnums.eDrawAction;
+import pokerEnums.eGameState;
 public class PokerTableController {
-
+	
+	@FXML
+	private Button btnToggle;
+	boolean bPlay = false;
 	boolean bP1Sit = false;
 	boolean bP2Sit = false;
 	boolean bP3Sit = false;
 	boolean bP4Sit = false;
+	
+	@FXML
+    private void GetToggleGroup() {
+
+    	mainApp.getToggleGroup();
+    	
+    }
 
 	// Reference to the main application.
 	private MainApp mainApp;
 	private GamePlay gme = null;
 	private int iCardDrawn = 0;
+	private int iCardDrawnPlayer = 0;
+	private int iCardDrawnCommon = 0;
+	private int iDrawingCount = 0;
+	private Player PlayerCommon = new Player("Common", 0);
 
 	@FXML
 	public AnchorPane APMainScreen;
-
+	private ImageView imgTransCardP1 = new ImageView();
+	private ImageView imgTransCardP2 = new ImageView();
+	private ImageView imgTransCardP3 = new ImageView();
+	private ImageView imgTransCardP4 = new ImageView();
+	private ImageView imgTransCardCommon = new ImageView();
 	private ImageView imgTransCard = new ImageView();
 
 	@FXML
@@ -109,19 +138,12 @@ public class PokerTableController {
 	public PokerTableController() {
 	}
 
-	/**
-	 * Initializes the controller class. This method is automatically called
-	 * after the fxml file has been loaded.
-	 */
+	
 	@FXML
 	private void initialize() {
 	}
 
-	/**
-	 * Is called by the main application to give a reference back to itself.
-	 * 
-	 * @param mainApp
-	 */
+	
 	public void setMainApp(MainApp mainApp) {
 		this.mainApp = mainApp;
 
@@ -130,27 +152,37 @@ public class PokerTableController {
 	@FXML
 	private void handleP1SitLeave() {		
 		int iPlayerPosition = 1;
-		handleSitLeave(bP1Sit, iPlayerPosition, lblP1Name, txtP1Name, btnP1SitLeave);
+		btnP1SitLeave.setDisable(true);
+		bP1Sit = handleSitLeave(bP1Sit, iPlayerPosition, lblP1Name, txtP1Name, btnP1SitLeave, hBoxP1Cards);
+		btnP1SitLeave.setDisable(false);
 	}
 
 	@FXML
 	private void handleP2SitLeave() {		
 		int iPlayerPosition = 2;
-		handleSitLeave(bP1Sit, iPlayerPosition, lblP2Name, txtP2Name, btnP2SitLeave);
+		btnP2SitLeave.setDisable(true);
+		bP2Sit = handleSitLeave(bP2Sit, iPlayerPosition, lblP2Name, txtP2Name, btnP2SitLeave, hBoxP2Cards);
+		btnP2SitLeave.setDisable(false);
 	}
+	
 	@FXML
 	private void handleP3SitLeave() {		
 		int iPlayerPosition = 3;
-		handleSitLeave(bP1Sit, iPlayerPosition, lblP3Name, txtP3Name, btnP3SitLeave);
+		btnP3SitLeave.setDisable(true);
+		bP3Sit = handleSitLeave(bP3Sit, iPlayerPosition, lblP3Name, txtP3Name, btnP3SitLeave, hBoxP3Cards);
+		btnP3SitLeave.setDisable(false);
 	}
+	
 	@FXML
 	private void handleP4SitLeave() {		
-		int iPlayerPosition = 3;
-		handleSitLeave(bP1Sit, iPlayerPosition, lblP4Name, txtP4Name, btnP4SitLeave);
+		int iPlayerPosition = 4;
+		btnP4SitLeave.setDisable(true);
+		bP4Sit = handleSitLeave(bP4Sit, iPlayerPosition, lblP4Name, txtP4Name, btnP4SitLeave, hBoxP4Cards);
+		btnP4SitLeave.setDisable(false);
 	}
 
-	private void handleSitLeave(boolean bSit, int iPlayerPosition, Label lblPlayer, TextField txtPlayer, ToggleButton btnSitLeave)
-	{
+	private boolean handleSitLeave(boolean bSit, int iPlayerPosition, Label lblPlayer, TextField txtPlayer,
+			ToggleButton btnSitLeave, HBox HBoxPlayerCards) {
 		if (bSit == false) {
 			Player p = new Player(txtPlayer.getText(), iPlayerPosition);
 			mainApp.AddPlayerToTable(p);
@@ -164,22 +196,38 @@ public class PokerTableController {
 			btnSitLeave.setText("Sit");
 			txtPlayer.setVisible(true);
 			lblPlayer.setVisible(false);
+			HBoxPlayerCards.getChildren().clear();
 			bSit = false;
 		}
+
+		return bSit;
 	}
 	
 	
 	
 	@FXML
 	private void handlePlay() {
+
+		
+		ImageView imgBottom = new ImageView(
+				new Image(getClass().getResourceAsStream("/res/img/b1fh.png"), 75, 75, true, true));
+
+		HboxCommonArea.getChildren().clear();
+		HboxCommonArea.getChildren().add(imgBottom);
+		HboxCommunityCards.getChildren().clear();
 		
 		// Clear all players hands
 		hBoxP1Cards.getChildren().clear();
+		hBoxP2Cards.getChildren().clear();
+		hBoxP3Cards.getChildren().clear();
+		hBoxP4Cards.getChildren().clear();
 		
 		// Get the Rule, start the Game
 		Rule rle = new Rule(eGame.FiveStud);
 		gme = new GamePlay(rle);
 
+		eGameState egamestate = eGameState.StartGame;
+		
 		// Add the seated players to the game
 		for (Player p : mainApp.GetSeatedPlayers()) {
 			gme.addPlayerToGame(p);
@@ -216,6 +264,9 @@ public class PokerTableController {
 	@FXML
 	private void handleDraw() {
 		iCardDrawn++;
+		iDrawingCount++;
+		ImageView imView = null;
+		eGameState egamestate= eGameState.PlayGame;
 
 		//  Disable the button in case of double-click
 		btnDraw.setDisable(true);
@@ -289,27 +340,6 @@ public class PokerTableController {
 	}
 
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
 
 	private SequentialTransition createTransition(final Point2D pntStartPoint, final Point2D pntEndPoint) {
 
@@ -378,12 +408,7 @@ public class PokerTableController {
 	}	
 	
 	
-	/**
-	 * randInt - Create a random number
-	 * @param min
-	 * @param max
-	 * @return
-	 */
+	
 	private static int randInt(int min, int max) {
 
 		return (int) (Math.random() * ( min - max )) * -1;

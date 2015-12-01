@@ -3,18 +3,19 @@ package pokerBase;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.UUID;
-
 import javax.xml.bind.annotation.XmlElement;
-
 import domain.HandDomainModel;
 import domain.CardDomainModel;
 import enums.eCardNo;
 import enums.eHandStrength;
 import enums.eRank;
+import pokerEnums.eEvalType;
 
 public class Hand extends HandDomainModel {
 
+	private static final String CombinatoricsUtils = null;
 	private static Deck dNonWildDeck = new Deck();
 	
 	public Hand() {
@@ -73,16 +74,64 @@ public class Hand extends HandDomainModel {
 
 		return h;
 	}
+	
+	public static ArrayList<Hand> ListHands(Hand PlayerHand, Hand CommonHand, GamePlay gme) {
 
-	/**
-	 * Takes in a hand and analyzes each card. If the card is a Joker or wild
-	 * card, it sets the hand as unnatural. Then, it calls SubstituteHand on the
-	 * hand. Ultimately, what is returned is an ArrayList of Hand ranging from 1
-	 * hand (if there were not Jokers/wild cards to millions of hands.
-	 * 
-	 * @param h
-	 * @return
-	 */
+		ArrayList<Hand> CombinHands = new ArrayList<Hand>();
+		int iPlayerNumberOfCards = gme.getRule().GetNumberOfCards();
+		int iPlayerCardsMin = gme.getRule().getPlayerCardsMin();
+		int iPlayerCardsMax = gme.getRule().getPlayerCardsMax();
+		int iCommonCardsMin = gme.getRule().getCommunityCardsMin();
+		int iCommonCardsMax = gme.getRule().getCommunityCardsMax();
+		
+		
+		for (int iPassPlayer = 0; iPassPlayer <= (iPlayerCardsMax - iPlayerCardsMin);iPassPlayer++)
+		{
+			Iterator iterPlayer = CombinatoricsUtils.combinationsIterator(iPlayerNumberOfCards, (iPlayerCardsMin + iPassPlayer));
+			while (iterPlayer.hasNext())				
+			{
+				int[] iPlayerCardsToPick = (int[]) iterPlayer.next();
+
+				if (iCommonCardsMax > 0)
+				{
+					Iterator iterCommon = CombinatoricsUtils.combinationsIterator(iCommonCardsMax, (iCommonCardsMax - iPlayerCardsToPick.length));
+					while (iterCommon.hasNext())
+					{
+						int[] iCommonCardsToPick = (int[]) iterCommon.next();
+						Hand h = new Hand();
+						for (int iPlayerArrayPos = 0; iPlayerArrayPos < iPlayerCardsToPick.length; iPlayerArrayPos++)
+						{
+							h.AddCardToHand((Card) PlayerHand.getCards().get(iPlayerCardsToPick[iPlayerArrayPos]));
+						}
+						
+						for (int iCommonArrayPos = 0; iCommonArrayPos < iCommonCardsToPick.length; iCommonArrayPos++)
+						{
+							h.AddCardToHand((Card) CommonHand.getCards().get(iCommonCardsToPick[iCommonArrayPos]));
+						}				
+						CombinHands.add(h);
+					}						
+				}
+				else if (iCommonCardsMax == 0)
+				{
+					Hand h = new Hand();
+					for (int iPlayerArrayPos = 0; iPlayerArrayPos < iPlayerCardsToPick.length; iPlayerArrayPos++)
+					{
+						h.AddCardToHand((Card) PlayerHand.getCards().get(iPlayerCardsToPick[iPlayerArrayPos]));
+					}
+					CombinHands.add(h);
+				}
+			}			
+		}
+
+		//	Evaluate each hand (why not?)
+		for (Hand h : CombinHands) {
+			h = Hand.EvalHand(h);
+		}
+
+		return CombinHands;
+
+	}
+	
 	private static ArrayList<Hand> ExplodeHands(Hand h) {
 		ArrayList<Hand> HandsToReturn = new ArrayList<Hand>();
 		HandsToReturn.add(h);
@@ -90,7 +139,7 @@ public class Hand extends HandDomainModel {
 		for (int a = 0; a < h.getCards().size(); a++) {
 			if (h.getCards().get(a).getRank().getRank() == eRank.JOKER.getRank()
 					|| h.getCards().get(a).getWild() == true) {
-				h.setbNatural(0); // Hand is not natural
+				h.setbNatural(0); 
 			}
 		}
 
@@ -101,6 +150,18 @@ public class Hand extends HandDomainModel {
 		}
 
 		return HandsToReturn; // ArrayList of all possible Hands
+
+	}
+	
+	public static Hand PickBestHand(ArrayList<Hand> hands) {
+
+		for (Hand EvalHand : hands) {
+			EvalHand.EvalHand();
+		}
+
+		Collections.sort(hands, Hand.HandRank);
+
+		return hands.get(0);
 
 	}
 

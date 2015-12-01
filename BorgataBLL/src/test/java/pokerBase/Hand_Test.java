@@ -3,22 +3,22 @@ package pokerBase;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Collections;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import enums.eCardNo;
+import enums.eGame;
 import enums.eHandStrength;
 import enums.eRank;
 import enums.eSuit;
-
 import pokerBase.Card;
 import pokerBase.Deck;
 import pokerBase.Hand;
+import pokerEnums.eEvalType;
 
 public class Hand_Test {
 
@@ -387,6 +387,44 @@ public class Hand_Test {
 		assertTrue(winningHand.getHiHand() == eRank.NINE.getRank());
 		
 	}	
+	
+	@Test
+	public void TexasHoldEm() {
+		Hand playerHand = new Hand();
+		Hand commonHand = new Hand();
+
+		Rule rle = new Rule(eGame.TexasHoldEm);
+		GamePlay gme = new GamePlay(rle);
+		
+		playerHand.AddCardToHand(new Card(eSuit.CLUBS, eRank.ACE, 0));
+		playerHand.AddCardToHand(new Card(eSuit.CLUBS, eRank.KING, 0));
+
+		commonHand.AddCardToHand(new Card(eSuit.CLUBS, eRank.TWO, 0));
+		commonHand.AddCardToHand(new Card(eSuit.CLUBS, eRank.THREE, 0));
+		commonHand.AddCardToHand(new Card(eSuit.CLUBS, eRank.SIX, 0));
+		commonHand.AddCardToHand(new Card(eSuit.CLUBS, eRank.SEVEN, 0));
+		commonHand.AddCardToHand(new Card(eSuit.CLUBS, eRank.EIGHT, 0));
+
+		ArrayList<Hand> AllHands = new ArrayList<Hand>();
+
+		AllHands = Hand.ListHands(playerHand, commonHand,gme);
+		System.out.println(AllHands.size());
+		assertTrue(AllHands.size() == gme.getRule().getPossibleHandCombinations());
+
+		HashSet hsHands = new HashSet();
+		
+		for (Hand h : AllHands) {
+			hsHands.add(h);
+		}
+		
+		//	Check to see if I have N different hands
+		assertTrue(hsHands.size() == gme.getRule().getPossibleHandCombinations());
+		
+
+		Hand h = Hand.PickBestHand(AllHands);
+		assertTrue("This should be a flush",h.getHandStrength() == eHandStrength.Flush.getHandStrength());
+		assertTrue("This should be an ace", h.getHiHand() == eRank.ACE.getRank());
+	}
 	
 }
 

@@ -1,9 +1,7 @@
 package domain;
 
 import java.util.Comparator;
-
 import javax.xml.bind.annotation.XmlElement;
-
 import enums.eRank;
 import enums.eSuit;
 
@@ -19,19 +17,11 @@ public class CardDomainModel {
 	
 	private int CardNbr;
 	
-	 
-	/**
-	 * Keep the no-arg constructor private.  I don't want 'Card' created without attributes.
-	 */
+
 	public CardDomainModel()
 	{
 	}
 	
-	/**
-	 * Create a new card of a given rank and suit.
-	 * @param suit
-	 * @param rank
-	 */
 	public CardDomainModel(eSuit suit, eRank rank, int CardNbr ) {
 		Suit = suit; 
 		Rank = rank; 
@@ -47,18 +37,12 @@ public class CardDomainModel {
 		this.CardImg = CardNbr + ".png";
 	}
 	
-	/**
-	 * Getter for Rank
-	 * @return
-	 */
+	
 	public eRank getRank() {
 		return this.Rank;
 	}
 
-	/**
-	 * Getter for Suit
-	 * @return
-	 */
+
 	public eSuit getSuit() {
 		return this.Suit;
 	}
@@ -86,9 +70,6 @@ public class CardDomainModel {
 		CardNbr = cardNbr;
 	}
 
-	/**
-	 * CardRank Comparator is used for sorting the collection by rank
-	 */
 	
 	public static Comparator<CardDomainModel> CardRank = new Comparator<CardDomainModel>() {
 
@@ -97,7 +78,6 @@ public class CardDomainModel {
 		   int Cno1 = c1.getRank().getRank();
 		   int Cno2 = c2.getRank().getRank();
 
-		   /*For descending order*/
 		   return Cno2 - Cno1;
 
 	   }};

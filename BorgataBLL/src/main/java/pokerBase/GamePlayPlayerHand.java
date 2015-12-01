@@ -4,7 +4,9 @@ public class GamePlayPlayerHand {
 
 	private GamePlay game = null;
 	private Player player = null;
+	private Hand besthand = null;
 	private Hand hand = null;
+	
 	
 	private Player WinningPlayer = null;
 	
@@ -39,6 +41,14 @@ public class GamePlayPlayerHand {
 	public void addCardToHand( Card c)
 	{
 		getHand().AddCardToHand(c);
+	}
+	
+	public Hand getBestHand() {
+		return besthand;
+	}
+
+	public void setBestHand(Hand BestHand) {
+		besthand = BestHand;
 	}
 	
 	public Player getWinningPlayer() {

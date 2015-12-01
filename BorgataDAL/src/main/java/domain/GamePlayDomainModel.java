@@ -2,12 +2,16 @@ package domain;
 
 import java.util.ArrayList;
 import java.util.UUID;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import domain.RuleDomainModel;
+import java.util.UUID;
+
+
 
 public class GamePlayDomainModel {
 

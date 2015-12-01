@@ -1,7 +1,6 @@
 package pokerBase;
 
 import java.util.ArrayList;
-
 import domain.TableDomainModel;
 
 public class Table extends TableDomainModel {

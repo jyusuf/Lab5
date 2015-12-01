@@ -1,28 +1,22 @@
 package poker.app.view;
-
+import poker.app.MainApp;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ToggleGroup;
 import javafx.stage.FileChooser;
-import poker.app.MainApp;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 
-/**
- * The controller for the root layout. The root layout provides the basic
- * application layout containing a menu bar and space where other JavaFX
- * elements can be placed.
- * 
- * @author Marco Jakob
- */
+
+
 public class RootLayoutController implements Initializable {
 
     // Reference to the main application
@@ -31,6 +25,8 @@ public class RootLayoutController implements Initializable {
     @FXML
     private Menu mnuGame;
     
+    @FXML
+    private ToggleGroup tglGames;
     
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -108,10 +104,9 @@ public class RootLayoutController implements Initializable {
     @FXML
     private void handleAbout() {
         Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("AddressApp");
+        alert.setTitle("Lab6");
         alert.setHeaderText("About");
-        alert.setContentText("Author: Bert Gibbons");
-
+        alert.setContentText("Author is Jama Yusuf");
         alert.showAndWait();
     }
 
@@ -130,6 +125,12 @@ public class RootLayoutController implements Initializable {
     }
 
 
+	public ToggleGroup getTglGames() {
+		return tglGames;
+	}
 
+	public void setTglGames(ToggleGroup tglGames) {
+		this.tglGames = tglGames;
+	}
 
 }

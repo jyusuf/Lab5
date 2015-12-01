@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.UUID;
-
-import javax.xml.bind.annotation.XmlElement;
-
 import enums.eCardNo;
 import enums.eHandStrength;
 import enums.eRank;
+import javax.xml.bind.annotation.XmlElement;
+
 
 public class HandDomainModel {
 	private UUID playerID;
@@ -30,7 +29,6 @@ public class HandDomainModel {
 	private ArrayList<CardDomainModel> Kickers = new ArrayList<CardDomainModel>();
 
 	private boolean bScored = false;
-
 	private boolean Flush;
 	private boolean Straight;
 	private boolean Ace;
